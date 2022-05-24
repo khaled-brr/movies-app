@@ -1,5 +1,5 @@
 <template>
-  <div class="home text-danger ">
+  <div class="home text-danger">
     <hero />
     <ul class="movies-card-container container">
       <li class="movies-card" v-for="movie in movies" :key="movie.id">
@@ -8,9 +8,22 @@
             :src="`https://image.tmdb.org/t/p/w500/${movie.poster_path}`"
             alt=""
           />
-          <div class="about-movie mt-3">{{ movie.overview }}</div>
+          <!-- <div class="about-movie mt-3">{{ movie.overview }}</div> -->
         </div>
         <div style="color: #fff">{{ movie.id }}</div>
+        <div style="color: #fff">
+          {{new Date(movie.release_date).toLocaleString('en',{
+            month:'long',
+            day:'numeric',
+            year:'numeric',
+          })}}
+        </div>
+
+        <NuxtLink
+          style="color: #fff"
+          :to="{ name: 'movies-movieId', params: { movieId: movie.id } }"
+          >see more about movies
+        </NuxtLink>
       </li>
     </ul>
   </div>
@@ -54,7 +67,6 @@ export default {
   color: #fff;
   margin: 30px 0;
   height: 530px;
-
 }
 .img-about-container {
   widows: 100%;
