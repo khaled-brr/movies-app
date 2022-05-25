@@ -13,40 +13,86 @@
         />
         <button
           v-show="shearchMoviesWord !== ''"
-          @click="shearchMoviesWord = ''"
+          @click="clearSearch"
           class="button clear-search"
         >
           clear search
         </button>
       </div>
-      <ul class="movies-card-container">
-        <li class="movies-card" v-for="movie in movies" :key="movie.id">
-          <div class="img-about-container">
-            <img
-              :src="`https://image.tmdb.org/t/p/w500/${movie.poster_path}`"
-              alt=""
-            />
-            <div class="about-movie mt-3">{{ movie.overview }}</div>
-          </div>
-          <div class="mt-3">{{ movie.id }}</div>
-          <div class="movies-date">
-            {{
-              new Date(movie.release_date).toLocaleString('en', {
-                month: 'long',
-                day: 'numeric',
-                year: 'numeric',
-              })
-            }}
-          </div>
+      <loading v-if="$fetchState.pending" />
+      <div v-else class="movies-section">
+        <!--Movies  -->
+        <ul
+          v-if="shearchMoviesWord === ''"
+          class="all-movies movies-card-container"
+        >
+          <li class="movies-card mt-3" v-for="movie in movies" :key="movie.id">
+            <div class="img-about-container">
+              <img
+                :src="`https://image.tmdb.org/t/p/w500/${movie.poster_path}`"
+                alt=""
+              />
+              <div class="about-movie mt-3">{{ movie.overview }}</div>
+              <div class="vote-movie">{{ movie.vote_average }}</div>
+            </div>
+            <!-- <div class="mt-3">{{ movie.id }}</div> -->
+            <div class="movies-date mt-3">
+              released:
+              {{
+                new Date(movie.release_date).toLocaleString('en', {
+                  month: 'long',
+                  day: 'numeric',
+                  year: 'numeric',
+                })
+              }}
+            </div>
+            <div class="">{{ movie.title }}</div>
 
-          <NuxtLink
-            class="button button-green"
-            style="color: #fff"
-            :to="{ name: 'movies-movieId', params: { movieId: movie.id } }"
-            >see more about movies
-          </NuxtLink>
-        </li>
-      </ul>
+            <NuxtLink
+              class="button button-green mt-3"
+              style="color: #fff"
+              :to="{ name: 'movies-movieId', params: { movieId: movie.id } }"
+              >see more about movies
+            </NuxtLink>
+          </li>
+        </ul>
+        <!-- Searched Movies -->
+        <ul v-else class="searched-movies movies-card-container">
+          <li
+            class="movies-card mt-3"
+            v-for="movie in shearchMovies"
+            :key="movie.id"
+          >
+            <div class="img-about-container">
+              <img
+                :src="`https://image.tmdb.org/t/p/w500/${movie.poster_path}`"
+                alt=""
+              />
+              <div class="about-movie mt-3">{{ movie.overview }}</div>
+              <div class="vote-movie">{{ movie.vote_average }}</div>
+            </div>
+            <!-- <div class="mt-3">{{ movie.id }}</div> -->
+            <div class="movies-date mt-3">
+              released:
+              {{
+                new Date(movie.release_date).toLocaleString('en', {
+                  month: 'long',
+                  day: 'numeric',
+                  year: 'numeric',
+                })
+              }}
+            </div>
+            <div class="">{{ movie.title }}</div>
+
+            <NuxtLink
+              class="button button-green mt-3"
+              style="color: #fff"
+              :to="{ name: 'movies-movieId', params: { movieId: movie.id } }"
+              >see more about movies
+            </NuxtLink>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </template>
@@ -66,8 +112,12 @@ export default {
       await this.getMovies()
       return
     }
-    await this.getSearchedMovies()
+    if (this.shearchMoviesWord !== '') {
+      await this.getSearchedMovies()
+    }
   },
+    fetchDelay: 1000,
+
   methods: {
     async getMovies() {
       const moviesData = axios.get(
@@ -78,19 +128,26 @@ export default {
     },
     async getSearchedMovies() {
       const moviesData = axios.get(
-        `https://api.themoviedb.org/3/movie/now_playing?api_key=37ed43a4f8eaa2abd75f9283692947bc&language=en-US&page=1&query=${this.shearchMoviesWord}`
+        `https://api.themoviedb.org/3/search/movie?api_key=37ed43a4f8eaa2abd75f9283692947bc&language=en-US&page=1&query=${this.shearchMoviesWord}`
       )
       const res = await moviesData
       this.shearchMovies = res.data.results
+    },
+    clearSearch() {
+      this.shearchMoviesWord = ''
+      this.shearchMovies = []
     },
   },
 }
 </script>
 
 <style scoped>
+.loading{
+  padding-top: 120px;
+  align-items: flex-start;
+}
 .ms-2 {
-margin-left: 2rem;
-
+  margin-left: 2rem;
 }
 .mt-3 {
   margin-top: 2rem;
@@ -118,16 +175,32 @@ margin-left: 2rem;
   list-style: none;
 }
 .movies-card {
-  width: calc(96% / 3);
-  color: #fff;
-  margin: 30px 0;
-  height: 530px;
+  flex: 1 1 300px;
+  color: #222;
+  margin: 20px 0;
+  height: 630px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #017374;
 }
 .img-about-container {
   widows: 100%;
   height: 430px;
   position: relative;
   overflow: hidden;
+}
+.vote-movie {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50px;
+  height: 40px;
+  background: #017374;
+  padding: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  border-bottom-right-radius: 20px;
 }
 .img-about-container:hover .about-movie {
   transform: translateY(0);
