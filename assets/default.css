@@ -1,10 +1,10 @@
-@import url("https://fonts.googleapis.com/css2?family=Karla:wght@200;300;400;500;600&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Karla:wght@200;300;400;500;600&display=swap');
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Karla", sans-serif;
+  font-family: 'Karla', sans-serif;
   scroll-behavior: smooth;
 }
 
@@ -27,7 +27,7 @@
   text-decoration: none;
   color: inherit;
   padding: 8px 16px;
-  background-color: #c92502;
+  background-color: #017374;
   border: none;
   color: #fff;
   border-radius: 4px;
@@ -35,12 +35,12 @@
   transition: 0.3s ease all;
 }
 .button:hover {
-  background-color: #891b02;
+  background-color: #017374;
 }
 
 .button-light {
   background-color: transparent;
-  border: 1px solid #c92502;
+  border: 1px solid #017374;
 }
 
 .button-light:hover {
