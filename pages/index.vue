@@ -99,9 +99,23 @@
 <script>
 import axios from 'axios'
 export default {
+  head() {
+      return {
+        title: this.title,
+        meta: [
+          // hid is used as unique identifier. Do not use `vmid` for it as it will not work
+          {
+            hid: 'description',
+            name: 'description',
+            content: 'My custom description'
+          }
+        ]
+      }
+    },
   data() {
     return {
       movies: [],
+      title: 'Movies Application',
       shearchMovies: [],
       shearchMoviesWord: '',
     }
@@ -116,19 +130,20 @@ export default {
       await this.getSearchedMovies()
     }
   },
-    fetchDelay: 1000,
+  fetchDelay: 1000,
 
   methods: {
     async getMovies() {
       const moviesData = axios.get(
-        'https://api.themoviedb.org/3/movie/now_playing?api_key=37ed43a4f8eaa2abd75f9283692947bc&language=en-US&page=1'
+        'https://api.themoviedb.org/3/movie/now_playing?api_key=7d8ae35610ceed0a5fe301bc5d182678&language=en-US&page=1'
       )
+
       const res = await moviesData
       this.movies = res.data.results
     },
     async getSearchedMovies() {
       const moviesData = axios.get(
-        `https://api.themoviedb.org/3/search/movie?api_key=37ed43a4f8eaa2abd75f9283692947bc&language=en-US&page=1&query=${this.shearchMoviesWord}`
+        `https://api.themoviedb.org/3/search/movie?api_key=7d8ae35610ceed0a5fe301bc5d18267&language=en-US&page=1&query=${this.shearchMoviesWord}`
       )
       const res = await moviesData
       this.shearchMovies = res.data.results
@@ -142,7 +157,7 @@ export default {
 </script>
 
 <style scoped>
-.loading{
+.loading {
   padding-top: 120px;
   align-items: flex-start;
 }
